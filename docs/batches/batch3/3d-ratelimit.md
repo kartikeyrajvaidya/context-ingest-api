@@ -340,7 +340,7 @@ The `message` vs `detail` key split is an artifact of where the response is buil
 
 ## 7. Acceptance test
 
-Manual pass against the live compose stack (`docker compose up --build -d`; API on `:8050`, Postgres on `:5433`). No pytest.
+Manual pass against the live compose stack (`docker compose up --build -d`; API on `:8080`, Postgres on `:5432`). No pytest.
 
 **Defaults for this run:** `RATE_LIMIT_IP_PER_MINUTE=5`, `RATE_LIMIT_SESSION_PER_HOUR=15`, `RATE_LIMIT_CONVERSATION_MAX_TURNS=10`. For layer 2 and 3 tests, temporarily raise `RATE_LIMIT_IP_PER_MINUTE=1000` so layer 1 doesn't mask the lower layers.
 

@@ -23,14 +23,14 @@ No vector database service. No background queue. No framework sprawl. Just FastA
 git clone https://github.com/kartikeyrajvaidya/context-ingest-api.git
 cd context-ingest-api
 cp .env.example .env          # set OPENAI_API_KEY
-docker compose up --build -d  # Postgres on :5433, API on :8050
+docker compose up --build -d  # Postgres on :5432, API on :8080
 ```
 
 Ingest the demo corpus and ask a question:
 
 ```bash
-curl -X POST http://localhost:8050/v1/ingest
-curl -s -X POST http://localhost:8050/v1/query \
+curl -X POST http://localhost:8080/v1/ingest
+curl -s -X POST http://localhost:8080/v1/query \
   -H "Content-Type: application/json" \
   -d '{"question": "What are microservices?", "session_id": "demo"}'
 ```

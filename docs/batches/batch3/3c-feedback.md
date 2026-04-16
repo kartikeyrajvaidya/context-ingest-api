@@ -176,7 +176,7 @@ Manual pass. Preconditions: compose stack healthy, valid `OPENAI_API_KEY` (for F
 
 **F1. Happy path — first insert.**
 ```bash
-curl -sS -o /dev/null -w "http=%{http_code}\n" -X POST http://localhost:8050/v1/feedback \
+curl -sS -o /dev/null -w "http=%{http_code}\n" -X POST http://localhost:8080/v1/feedback \
   -H 'content-type: application/json' \
   -d "{\"query_id\":\"$QID\",\"rating\":\"helpful\",\"reason\":\"  answered with the right citations  \"}"
 ```

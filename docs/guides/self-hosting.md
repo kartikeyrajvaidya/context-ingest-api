@@ -51,11 +51,11 @@ Copy `.env.example` to `.env` and configure:
 
 ## Reverse proxy
 
-Put a reverse proxy (nginx, Caddy) in front of port 8050 for TLS. Set `X-Forwarded-For` so the rate limiter sees real client IPs:
+Put a reverse proxy (nginx, Caddy) in front of port 8080 for TLS. Set `X-Forwarded-For` so the rate limiter sees real client IPs:
 
 ```nginx
 location / {
-    proxy_pass http://127.0.0.1:8050;
+    proxy_pass http://127.0.0.1:8080;
     proxy_set_header X-Forwarded-For $remote_addr;
     proxy_set_header Host $host;
 }

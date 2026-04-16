@@ -28,7 +28,7 @@ How to add content to your ContextIngest instance.
 **Over HTTP:**
 
 ```bash
-curl -X POST http://localhost:8050/v1/ingest
+curl -X POST http://localhost:8080/v1/ingest
 ```
 
 Returns `{"data": {"ok": true}}` on success, 500 on failure. Details are in server logs.

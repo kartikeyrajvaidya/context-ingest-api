@@ -24,12 +24,12 @@ Everything else has sensible defaults.
 docker compose up --build -d
 ```
 
-This starts PostgreSQL (port 5433) and the API (port 8050), runs migrations, and boots the server.
+This starts PostgreSQL (port 5432) and the API (port 8080), runs migrations, and boots the server.
 
 Verify it's alive:
 
 ```bash
-curl http://localhost:8050/health
+curl http://localhost:8080/health
 ```
 
 ## 3. Ingest content
@@ -49,13 +49,13 @@ ingested=2 unchanged=0 failed=0
 You can also trigger ingestion over HTTP:
 
 ```bash
-curl -X POST http://localhost:8050/v1/ingest
+curl -X POST http://localhost:8080/v1/ingest
 ```
 
 ## 4. Ask a question
 
 ```bash
-curl -s -X POST http://localhost:8050/v1/query \
+curl -s -X POST http://localhost:8080/v1/query \
   -H "Content-Type: application/json" \
   -d '{"question": "What are microservices?", "session_id": "demo"}' | python3 -m json.tool
 ```
@@ -65,7 +65,7 @@ You'll get back an answer with citations, confidence score, and suggested follow
 ## 5. Record feedback
 
 ```bash
-curl -X POST http://localhost:8050/v1/feedback \
+curl -X POST http://localhost:8080/v1/feedback \
   -H "Content-Type: application/json" \
   -d '{"query_id": "PASTE_QUERY_ID_HERE", "rating": "helpful"}'
 ```

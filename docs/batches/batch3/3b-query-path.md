@@ -485,11 +485,11 @@ None new — `openai==1.107.1`, `tiktoken==0.12.0`, `pgvector==0.4.2`, `SQLAlche
 
 ## 11. Acceptance test
 
-Manual pass against the live compose stack. API on `:8050`, Postgres on `:5433`. Preconditions: valid `OPENAI_API_KEY`, `gpt-5.4-mini` reachable, at least three documents ingested via `python -m scripts.ingest_url` (the T1/T3/T8 fixtures from 3a).
+Manual pass against the live compose stack. API on `:8080`, Postgres on `:5432`. Preconditions: valid `OPENAI_API_KEY`, `gpt-5.4-mini` reachable, at least three documents ingested via `python -m scripts.ingest_url` (the T1/T3/T8 fixtures from 3a).
 
 **Q1. Happy path.**
 ```bash
-curl -sS -X POST http://localhost:8050/v1/query \
+curl -sS -X POST http://localhost:8080/v1/query \
   -H 'content-type: application/json' \
   -d '{"question":"How do I run migrations?","session_id":"sess_test_1"}' | jq
 ```

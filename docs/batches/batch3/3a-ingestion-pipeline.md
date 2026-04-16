@@ -399,7 +399,7 @@ Manual pass. Preconditions: `.env` has a real `OPENAI_API_KEY`; `docker compose 
 
 **T8. Bulk from file.** `/tmp/urls.txt` with a comment line, a blank line, and two URLs (one already ingested in T1). Expected: one summary line per URL, then `ingested=1 unchanged=1 failed=0`.
 
-**T9. Ingest HTTP route is gone.** `curl -X POST http://localhost:8050/v1/ingest` → 404.
+**T9. Ingest HTTP route is gone.** `curl -X POST http://localhost:8080/v1/ingest` → 404.
 
 **T10. `/v1/query` and `/v1/feedback` stubs still 501.** Regression check.
 

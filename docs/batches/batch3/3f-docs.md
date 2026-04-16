@@ -113,13 +113,13 @@ Sections: (1) who this doc is for; (2) the full flow as a numbered 8-step list; 
 
 Zero-to-one in ten minutes for someone with Docker and an OpenAI key.
 
-Sections: (1) what you'll have at the end, with one example response; (2) prerequisites — Docker Desktop, OpenAI key, ports 8050 and 5433 free; (3) clone + configure — `git clone`, `cp .env.example .env`, drop in the key; (4) boot — `docker compose up --build`, expected log lines; (5) ingest the demo corpus via `docker compose exec context-ingest-api python -m scripts.ingest_all` (reads `data/sources.json`), with a note that ad-hoc one-offs use `python -m scripts.ingest_one --url ...` or `--file ...`; (6) ask a question with one `curl`, expected truncated response, pointers for which fields to inspect; (7) record feedback with one `curl`; (8) what's next — links to the other three guides.
+Sections: (1) what you'll have at the end, with one example response; (2) prerequisites — Docker Desktop, OpenAI key, ports 8080 and 5432 free; (3) clone + configure — `git clone`, `cp .env.example .env`, drop in the key; (4) boot — `docker compose up --build`, expected log lines; (5) ingest the demo corpus via `docker compose exec context-ingest-api python -m scripts.ingest_all` (reads `data/sources.json`), with a note that ad-hoc one-offs use `python -m scripts.ingest_one --url ...` or `--file ...`; (6) ask a question with one `curl`, expected truncated response, pointers for which fields to inspect; (7) record feedback with one `curl`; (8) what's next — links to the other three guides.
 
 Every command is copy-pasteable. Tested end-to-end on a fresh machine before merge (§9 D1).
 
 ### 5.8 `docs/guides/self-hosting.md`
 
-Sections: (1) who this is for; (2) env vars grouped (DB, LLM, retrieval, rate limiting, chunking) — each row: name, default, purpose, where read; (3) volume + backup, one paragraph on why `query_responses` is the audit table; (4) reverse proxy — sample nginx block terminating TLS in front of `:8050` with `X-Forwarded-For` set so the 3d rate limiter sees the real client IP; (5) log shipping — `docker logs` or mount `/var/log`; (6) OpenAI budget — rough back-of-envelope pointing at OpenAI's pricing page; (7) upgrade flow — `git pull && docker compose up --build -d`; (8) what this guide does not cover (TLS cert provisioning, Kubernetes, cloud-provider specifics).
+Sections: (1) who this is for; (2) env vars grouped (DB, LLM, retrieval, rate limiting, chunking) — each row: name, default, purpose, where read; (3) volume + backup, one paragraph on why `query_responses` is the audit table; (4) reverse proxy — sample nginx block terminating TLS in front of `:8080` with `X-Forwarded-For` set so the 3d rate limiter sees the real client IP; (5) log shipping — `docker logs` or mount `/var/log`; (6) OpenAI budget — rough back-of-envelope pointing at OpenAI's pricing page; (7) upgrade flow — `git pull && docker compose up --build -d`; (8) what this guide does not cover (TLS cert provisioning, Kubernetes, cloud-provider specifics).
 
 ### 5.9 `docs/guides/ingestion.md`
 
@@ -155,7 +155,7 @@ The bar for a docs batch is "would a stranger succeed by following this?". Parti
 
 ### Preconditions
 
-A clean checkout of `main` with 3a–3e shipped. `docker compose down -v && docker compose up --build -d` produces a running API on `:8050` and Postgres on `:5433`. A scratch directory on a machine that has Docker + an OpenAI key and has never seen this repo.
+A clean checkout of `main` with 3a–3e shipped. `docker compose down -v && docker compose up --build -d` produces a running API on `:8080` and Postgres on `:5432`. A scratch directory on a machine that has Docker + an OpenAI key and has never seen this repo.
 
 ### Test cases
 
