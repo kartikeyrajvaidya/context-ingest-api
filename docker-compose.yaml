@@ -1,0 +1,63 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-context_ingest}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db/migrations/sql:/docker-entrypoint-initdb.d
+      - postgres-data:/var/lib/postgresql/data:rw
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  context-ingest-api:
+    image: context-ingest-api
+    build: .
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT:-dev}
+      DB_CONNECTION_URI: ${DOCKER_DB_CONNECTION_URI:-postgresql://postgres:password@postgres:5432/context_ingest}
+      DB_CONNECTION_URI_ASYNCPG: ${DOCKER_DB_CONNECTION_URI_ASYNCPG:-postgresql+asyncpg://postgres:password@postgres:5432/context_ingest}
+      SCHEMA_NAME: ${SCHEMA_NAME:-public}
+      DB_STATEMENT_TIMEOUT: ${DB_STATEMENT_TIMEOUT:-3000}
+      DB_APPLICATION_NAME: ${DB_APPLICATION_NAME:-context-ingest-api}
+      SQLALCHEMY_ECHO: ${SQLALCHEMY_ECHO:-F}
+      SQLALCHEMY_ECHO_POOL: ${SQLALCHEMY_ECHO_POOL:-F}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_ANSWER_MODEL: ${OPENAI_ANSWER_MODEL:-gpt-5.4-mini}
+      OPENAI_EMBEDDING_MODEL: ${OPENAI_EMBEDDING_MODEL:-text-embedding-3-small}
+      OPENAI_TIMEOUT_SECONDS: ${OPENAI_TIMEOUT_SECONDS:-20}
+      CHUNK_TOKEN_SIZE: ${CHUNK_TOKEN_SIZE:-500}
+      CHUNK_TOKEN_OVERLAP: ${CHUNK_TOKEN_OVERLAP:-75}
+      RETRIEVAL_VECTOR_CANDIDATES: ${RETRIEVAL_VECTOR_CANDIDATES:-20}
+      RETRIEVAL_FULLTEXT_CANDIDATES: ${RETRIEVAL_FULLTEXT_CANDIDATES:-20}
+      RETRIEVAL_TOP_K: ${RETRIEVAL_TOP_K:-5}
+      RATE_LIMIT_IP_PER_MINUTE: ${RATE_LIMIT_IP_PER_MINUTE:-5}
+      RATE_LIMIT_SESSION_PER_HOUR: ${RATE_LIMIT_SESSION_PER_HOUR:-15}
+      RATE_LIMIT_CONVERSATION_MAX_TURNS: ${RATE_LIMIT_CONVERSATION_MAX_TURNS:-10}
+      SAFETY_ENABLED: ${SAFETY_ENABLED:-true}
+      SAFETY_LLM_MODEL: ${SAFETY_LLM_MODEL:-gpt-4o-mini}
+    command: ["bash", "-c", "bash api/run.sh api"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./api:/context-ingest-api/api
+      - ./configs:/context-ingest-api/configs
+      - ./core:/context-ingest-api/core
+      - ./db:/context-ingest-api/db
+      - ./libs:/context-ingest-api/libs
+      - ./scripts:/context-ingest-api/scripts
+      - ./data:/context-ingest-api/data
+
+volumes:
+  postgres-data:

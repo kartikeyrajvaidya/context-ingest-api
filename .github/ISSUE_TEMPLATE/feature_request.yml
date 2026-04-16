@@ -1,0 +1,62 @@
+name: ✨ Feature request
+description: Suggest a new capability or improvement for ContextIngest API.
+title: "[feature] "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to suggest a feature.
+
+        ContextIngest API is intentionally small and opinionated. Before requesting a feature, please read the **non-goals** section of [ARCHITECTURE.md](https://github.com/kartikeyrajvaidya/context-ingest-api/blob/main/ARCHITECTURE.md) — some features (multi-tenancy, conversation memory, plugin systems) are deliberately out of scope.
+
+        For open-ended ideas or "should we…" questions, please use [Discussions](https://github.com/kartikeyrajvaidya/context-ingest-api/discussions) instead of opening an issue.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you trying to solve?
+      description: Describe the user-facing problem, not the implementation. "I want to ingest PDFs" is better than "add a PDF loader class".
+      placeholder: |
+        I want to ingest the documentation pages from a Notion workspace into my chatbot.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: How would you like ContextIngest API to solve this?
+      placeholder: |
+        Add a new fetcher for Notion that takes a workspace API token and a page ID,
+        and reuses the existing chunking + embedding pipeline.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What else have you tried, or what other shapes did you consider?
+      placeholder: |
+        - Exporting Notion to markdown manually and running `scripts/ingest_url.py` for each file — works but tedious for large workspaces.
+        - Writing a separate script that calls the ingest action — works but means every user reinvents the wheel.
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope check
+      description: Is this in line with ContextIngest's "small, opinionated, single-tenant" design? Why is it worth adding to the core rather than living in a fork?
+      placeholder: |
+        Notion is a common content source for documentation sites. Adding it as a first-class
+        fetcher (matching the existing URL fetcher's interface) keeps the surface small and
+        does not introduce a plugin system.
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this request you agree to follow our [Code of Conduct](https://github.com/kartikeyrajvaidya/context-ingest-api/blob/main/CODE_OF_CONDUCT.md).
+      options:
+        - label: I agree to follow the Code of Conduct
+          required: true

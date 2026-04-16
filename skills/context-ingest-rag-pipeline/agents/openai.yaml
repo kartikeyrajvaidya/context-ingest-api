@@ -1,0 +1,7 @@
+interface:
+  display_name: "RAG Pipeline"
+  short_description: "Strict rules for the RAG ingestion, retrieval, and answer pipeline"
+  default_prompt: "Use $context-ingest-rag-pipeline to plan or implement the ingestion, retrieval, prompts, and answer composition with strict batch, contract, guardrail, and eval rules."
+
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,100 @@
+[project]
+name = "context-ingest-api"
+version = "0.1.0a0"
+description = "Drop-in RAG backend for content sites. Ingest a URL, get a citation-backed chatbot. FastAPI + Postgres + pgvector + OpenAI."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.11"
+authors = [
+    { name = "Kartikey Raj Vaidya", email = "kartikeyrajvaidya@gmail.com" },
+]
+keywords = [
+    "rag",
+    "retrieval-augmented-generation",
+    "chatbot",
+    "fastapi",
+    "postgres",
+    "pgvector",
+    "openai",
+    "embeddings",
+    "hybrid-search",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+    "Framework :: FastAPI",
+]
+
+[project.urls]
+Homepage      = "https://github.com/kartikeyrajvaidya/context-ingest-api"
+Documentation = "https://github.com/kartikeyrajvaidya/context-ingest-api#readme"
+Repository    = "https://github.com/kartikeyrajvaidya/context-ingest-api"
+Issues        = "https://github.com/kartikeyrajvaidya/context-ingest-api/issues"
+Changelog     = "https://github.com/kartikeyrajvaidya/context-ingest-api/blob/main/CHANGELOG.md"
+
+# ContextIngest API is consumed as a service, not a library. requirements.txt is the
+# source of truth for runtime deps. pyproject.toml exists here for tool config
+# (ruff, mypy) and project metadata, not for `pip install context-ingest-api`.
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = [
+    "venv",
+    ".venv",
+    "db/migrations/versions",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # pyflakes
+    "I",      # isort
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "UP",     # pyupgrade
+    "SIM",    # flake8-simplify
+    "RUF",    # ruff-specific
+    "N",      # pep8-naming
+    "ASYNC",  # flake8-async
+]
+ignore = [
+    "E501",   # line length is enforced by the formatter
+    "B008",   # FastAPI uses Depends() in defaults; this is the idiom
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]  # re-exports
+
+[tool.ruff.lint.isort]
+known-first-party = ["api", "configs", "core", "db", "libs"]
+combine-as-imports = true
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+docstring-code-format = true
+
+[tool.mypy]
+python_version = "3.11"
+strict = false
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unreachable = true
+no_implicit_optional = true
+check_untyped_defs = true
+ignore_missing_imports = true
+exclude = [
+    "venv",
+    ".venv",
+    "db/migrations/versions",
+]

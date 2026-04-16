@@ -1,0 +1,24 @@
+# ContextIngest API code owners.
+#
+# These owners will be requested for review when someone opens a pull request
+# that modifies the matching files. See:
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default — every file unless overridden below.
+*                              @kartikeyrajvaidya
+
+# Anything that affects the public API contract or release surface.
+/api/                          @kartikeyrajvaidya
+/core/schema/                  @kartikeyrajvaidya
+/docs/api/                     @kartikeyrajvaidya
+/CHANGELOG.md                  @kartikeyrajvaidya
+/SECURITY.md                   @kartikeyrajvaidya
+
+# Database — schema changes need extra care.
+/db/                           @kartikeyrajvaidya
+
+# CI and release plumbing.
+/.github/                      @kartikeyrajvaidya
+/Dockerfile                    @kartikeyrajvaidya
+/docker-compose.yaml           @kartikeyrajvaidya
+/pyproject.toml                @kartikeyrajvaidya

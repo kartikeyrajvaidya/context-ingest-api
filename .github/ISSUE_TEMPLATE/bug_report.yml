@@ -1,0 +1,99 @@
+name: 🐛 Bug report
+description: Report something that doesn't work the way the docs say it should.
+title: "[bug] "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug report. The more concrete the report, the faster it gets fixed.
+
+        **Before submitting**, please:
+        - Search [existing issues](https://github.com/kartikeyrajvaidya/context-ingest-api/issues?q=is%3Aissue) to avoid duplicates
+        - Confirm you are on the latest commit of `main`
+        - If this is a security issue, **do not file it here** — see [SECURITY.md](https://github.com/kartikeyrajvaidya/context-ingest-api/blob/main/SECURITY.md)
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of the bug. What did you expect, and what did you get instead?
+      placeholder: |
+        I called POST /v1/query with question "..." and expected an answer with citations.
+        Instead, the API returned a 500 with message "...".
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Minimal, copy-pasteable steps. Include curl commands, sample URLs, or the smallest input that triggers the bug.
+      placeholder: |
+        1. `docker compose up --build -d`
+        2. `python -m scripts.ingest_url --url https://...`
+        3. `curl -X POST http://localhost:8000/v1/query -d '{"data":{"question":"..."}}'`
+        4. See error
+      render: bash
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: API logs, stack traces, or Postgres errors. Please scrub any secrets first.
+      render: text
+
+  - type: input
+    id: version
+    attributes:
+      label: ContextIngest API version / commit
+      description: Output of `git rev-parse HEAD` or the release tag.
+      placeholder: "0.1.0a0 or commit sha"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: deployment
+    attributes:
+      label: Deployment mode
+      options:
+        - Docker Compose (default)
+        - Local Python + local Postgres
+        - Other (describe in "Environment")
+    validations:
+      required: true
+
+  - type: input
+    id: python
+    attributes:
+      label: Python version
+      placeholder: "3.11.x"
+    validations:
+      required: true
+
+  - type: input
+    id: postgres
+    attributes:
+      label: Postgres version
+      placeholder: "17.x with pgvector 0.7"
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, container runtime, anything else relevant.
+      placeholder: |
+        macOS 14.5, Docker Desktop 4.30, ARM64
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue you agree to follow our [Code of Conduct](https://github.com/kartikeyrajvaidya/context-ingest-api/blob/main/CODE_OF_CONDUCT.md).
+      options:
+        - label: I agree to follow the Code of Conduct
+          required: true

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Backend"
+  short_description: "Strict FastAPI backend rules"
+  default_prompt: "Use $context-ingest-api-backend to plan, scaffold, or extend the backend with strict thin-route/thick-action FastAPI, migration, and logging rules."
+
+policy:
+  allow_implicit_invocation: true

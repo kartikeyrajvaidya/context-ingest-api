@@ -1,0 +1,11 @@
+[
+  {
+    "url": "https://martinfowler.com/articles/microservices.html",
+    "title": "Microservices"
+  },
+  {
+    "url": "knowledge://test-note",
+    "title": "Test note",
+    "file": "data/knowledge/test-note.md"
+  }
+]

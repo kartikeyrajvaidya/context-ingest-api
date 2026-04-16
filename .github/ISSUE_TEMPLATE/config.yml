@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Questions and discussions
+    url: https://github.com/kartikeyrajvaidya/context-ingest-api/discussions
+    about: Ask a question, share an idea, or get help running ContextIngest API.
+  - name: 🔒 Security vulnerabilities
+    url: https://github.com/kartikeyrajvaidya/context-ingest-api/security/policy
+    about: Please do NOT open a public issue. Read the security policy and report privately.
