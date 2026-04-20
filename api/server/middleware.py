@@ -6,7 +6,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 from core.rate_limit.ip_limiter import is_ip_rate_limited
 
-_RATE_LIMITED_PREFIXES = ("/v1/query", "/v1/feedback")
+_RATE_LIMITED_PREFIXES = ("/v1/query", "/v1/feedback", "/v1/ingest")
 
 
 class IPRateLimitMiddleware(BaseHTTPMiddleware):
