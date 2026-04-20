@@ -27,14 +27,6 @@ create table if not exists documents (
     created_at timestamp with time zone default now()
 );
 
-create index if not exists idx_documents_source_type
-    on documents(source_type);
-
-create index if not exists idx_documents_is_active
-    on documents(is_active);
-
-create index if not exists idx_documents_created_at
-    on documents(created_at);
 
 create table if not exists chunks (
     id text primary key,
@@ -56,5 +48,3 @@ create index if not exists idx_chunks_embedding
 create index if not exists idx_chunks_tsv
     on chunks using gin(tsv);
 
-create index if not exists idx_chunks_created_at
-    on chunks(created_at);

@@ -20,8 +20,7 @@
 -- response_payload is a single JSONB column holding the full response body
 -- (answer, citations, confidence, retrieved_chunk_ids, next_actions).
 -- Schema changes to the response shape are code-only — no migration needed.
--- status stays as a top-level column because it is indexed and filtered
--- for analytics.
+-- status stays as a top-level column for filtering in analytics queries.
 
 create table if not exists query_requests (
     id text primary key,
@@ -30,12 +29,6 @@ create table if not exists query_requests (
     conversation_id text not null,
     created_at timestamp with time zone default now()
 );
-
-create index if not exists idx_query_requests_created_at
-    on query_requests(created_at);
-
-create index if not exists idx_query_requests_session_id
-    on query_requests(session_id);
 
 create index if not exists idx_query_requests_conversation_id
     on query_requests(conversation_id);
@@ -53,18 +46,6 @@ create table if not exists query_responses (
     created_at timestamp with time zone default now()
 );
 
-create index if not exists idx_query_responses_created_at
-    on query_responses(created_at);
-
-create index if not exists idx_query_responses_status
-    on query_responses(status);
-
-create index if not exists idx_query_responses_session_id
-    on query_responses(session_id);
-
-create index if not exists idx_query_responses_conversation_id
-    on query_responses(conversation_id);
-
 create table if not exists feedback (
     id text primary key,
     query_id text not null unique references query_requests(id) on delete cascade,
@@ -74,8 +55,3 @@ create table if not exists feedback (
     updated_at timestamp with time zone not null default now()
 );
 
-create index if not exists idx_feedback_created_at
-    on feedback(created_at);
-
-create index if not exists idx_feedback_updated_at
-    on feedback(updated_at);
