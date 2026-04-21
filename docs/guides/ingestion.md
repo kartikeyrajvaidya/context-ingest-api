@@ -13,15 +13,14 @@ How to add content to your ContextIngest instance.
     "title": "My Post"
   },
   {
-    "url": "knowledge://internal-faq",
-    "title": "Internal FAQ",
-    "file": "data/content/faq.md"
+    "file": "data/content/faq.md",
+    "title": "Internal FAQ"
   }
 ]
 ```
 
 - **URL entries** are fetched over HTTP and cleaned with trafilatura.
-- **File entries** (with a `file` key) are read from disk relative to the repo root. Use a `knowledge://` URL as a stable identifier.
+- **File entries** (with a `file` key) are read from disk relative to the repo root. A `knowledge://<file-path>` identifier is auto-generated for citations. You can override it by adding a `url` field if you want a custom identifier.
 
 ## Running ingestion
 

@@ -35,7 +35,7 @@ def _load_manifest() -> list[dict]:
 
 
 def _build_request(entry: dict) -> IngestRequestSchema:
-    url = entry["url"]
+    url = entry.get("url")
     title = entry.get("title")
     file_rel = entry.get("file")
 
@@ -48,8 +48,11 @@ def _build_request(entry: dict) -> IngestRequestSchema:
             raise ValueError(f"file is empty: {file_rel}")
         is_markdown = path.suffix.lower() in (".md", ".markdown")
         text = clean_raw_text(raw, is_markdown=is_markdown)
-        return IngestRequestSchema(text=text, title=title, source_url=url)
+        source_url = url or f"knowledge://{file_rel}"
+        return IngestRequestSchema(text=text, title=title, source_url=source_url)
 
+    if not url:
+        raise ValueError("manifest entry must have either 'url' or 'file'")
     return IngestRequestSchema(url=url, title=title)
 
 
@@ -64,7 +67,7 @@ async def ingest_manifest() -> dict[str, int]:
     tallies = {"ingested": 0, "unchanged": 0, "failed": 0}
 
     for entry in sources:
-        url = entry.get("url", "?")
+        url = entry.get("url") or entry.get("file", "?")
         try:
             request = _build_request(entry)
             response = await ingest_document(request)

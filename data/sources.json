@@ -4,8 +4,7 @@
     "title": "Microservices"
   },
   {
-    "url": "knowledge://test-note",
-    "title": "Test note",
-    "file": "data/knowledge/test-note.md"
+    "file": "data/knowledge/test-note.md",
+    "title": "Test note"
   }
 ]
