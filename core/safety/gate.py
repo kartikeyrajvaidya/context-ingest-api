@@ -17,7 +17,7 @@ REFUSAL_USER_MESSAGE = "This request was declined by the safety filter."
 @dataclass(frozen=True)
 class GateResult:
     blocked: bool
-    category: str  # "safe" | "heuristic" | "prompt_injection" | "jailbreak" | "error"
+    category: str  # "safe" | "heuristic" | "refuse" | "error"
     operator_reason: str
 
 

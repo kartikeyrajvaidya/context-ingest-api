@@ -13,7 +13,7 @@ from core.services.prompts import SAFETY_CLASSIFIER_PROMPT
 
 class SafetyVerdict(BaseModel):
     safe: bool
-    category: Literal["safe", "prompt_injection", "jailbreak"]
+    category: Literal["safe", "refuse"]
     reason: str = Field(max_length=200)
 
 
