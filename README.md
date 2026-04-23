@@ -2,7 +2,6 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
-[![CI](https://github.com/kartikeyrajvaidya/context-ingest-api/actions/workflows/ci.yml/badge.svg)](https://github.com/kartikeyrajvaidya/context-ingest-api/actions/workflows/ci.yml)
 [![Code style: ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](./CODE_OF_CONDUCT.md)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
@@ -14,6 +13,30 @@
 No vector database service. No background queue. No framework sprawl. Just FastAPI, Postgres with pgvector, and OpenAI.
 
 > **Status: alpha (`0.1.0a0`)** -- APIs may change before `1.0`. See [CHANGELOG](./CHANGELOG.md).
+
+---
+
+## Why ContextIngest?
+
+Most RAG tutorials get you to "hello world" but leave you to build the rest: chunking, hybrid search, citation tracking, conversation history, safety filtering, rate limiting. ContextIngest ships all of that as a single Docker Compose stack.
+
+- **No framework lock-in.** Not a LangChain wrapper. Plain Python you can read and modify.
+- **One database.** Postgres does vectors, full-text search, and application state. No Redis, no Pinecone, no Weaviate.
+- **Production-ready from day one.** Rate limiting, safety gate, content hashing for idempotent re-ingestion, and structured citations out of the box.
+
+### Use cases
+
+- Add a Q&A chatbot to your blog or docs site
+- Build an internal knowledge base assistant
+- Create a customer support bot grounded in your help articles
+
+### In production
+
+ContextIngest powers the **Tax AI assistant** on [itrstats.in](https://itrstats.in) -- answering questions about Indian income tax with cited sources from blog posts and guides.
+
+<p align="center">
+  <img src="docs/assets/itrstats-chatbot.png" alt="Tax AI chatbot on itrstats.in powered by ContextIngest" width="700">
+</p>
 
 ---
 
