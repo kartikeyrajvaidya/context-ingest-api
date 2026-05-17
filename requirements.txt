@@ -6,7 +6,7 @@ asyncpg==0.30.0
 psycopg2-binary==2.9.10
 alembic==1.16.5
 greenlet==3.2.4
-openai==1.107.1
+openai==2.32.0
 pgvector==0.4.2
 tiktoken==0.12.0
 trafilatura==2.0.0
