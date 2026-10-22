@@ -18,13 +18,13 @@ git clone https://github.com/kartikeyrajvaidya/context-ingest-api.git
 cd context-ingest-api
 python -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt
-pip install pre-commit ruff
+pip install -r requirements-dev.txt
+pip install pre-commit
 pre-commit install
 cp .env.example .env
 ```
 
-`pre-commit install` wires the hooks defined in [`.pre-commit-config.yaml`](./.pre-commit-config.yaml) into your local `git commit`. They run `ruff check --fix`, `ruff format`, and a few file-hygiene checks on every commit. CI runs the same hooks, so anything pre-commit catches locally also blocks merges.
+`pre-commit install` wires the hooks defined in [`.pre-commit-config.yaml`](./.pre-commit-config.yaml) into your local `git commit`. They run `ruff check --fix`, `ruff format`, and a few file-hygiene checks on every commit. CI runs the same ruff checks plus mypy, pytest and a Docker build, so anything pre-commit catches locally also blocks merges.
 
 Set `OPENAI_API_KEY` in `.env`. Then either:
 
@@ -45,14 +45,14 @@ bash api/run.sh api
 Verify:
 
 ```bash
-curl -sS http://127.0.0.1:8000/health
+curl -sS http://127.0.0.1:8080/health
 ```
 
 ## Running migrations
 
 Migrations live in two places that must stay in sync:
 
-- `db/migrations/versions/NNNN_*.py` — Alembic scripts, used for incremental upgrades.
+- `db/migrations/versions/NNNN.py`: Alembic scripts, used for incremental upgrades.
 - `db/migrations/sql/NNNN.sql` — raw SQL mirror, used by Docker Compose to initialize a fresh database in one shot.
 
 When you add a migration:
@@ -73,9 +73,23 @@ This dual maintenance is deliberate — it lets the Docker bootstrap be a single
 - **No print statements.** Use `libs/logger.py`.
 - **Lint and format with Ruff.** Configured in [`pyproject.toml`](./pyproject.toml). Ruff replaces black, isort, and flake8 in this project. Run `ruff check .` and `ruff format .` before pushing — pre-commit will do this for you automatically.
 
+## Running checks and tests
+
+CI runs these on every pull request to `master`. Run them before pushing:
+
+```bash
+ruff check . && ruff format --check .
+bash .github/scripts/mypy_ratchet.sh
+pytest
+```
+
+- **pytest** lives in `tests/`. OpenAI calls are always mocked. Tests that need Postgres use the `database` fixture: they skip when the database is unreachable locally and fail in CI. To run them, start Postgres (`docker compose up postgres -d`) and apply migrations (`bash db/migrations/migrate.sh`). They write rows with unique `internal://test-...` identifiers to whatever database `DB_CONNECTION_URI_ASYNCPG` points at, so use a dev database.
+- **mypy** runs as a ratchet. Errors that predate CI are recorded in `.github/mypy-baseline.txt`; any new error fails the build. When you fix a baselined error, shrink the baseline with `bash .github/scripts/mypy_ratchet.sh --update`. Never add to it to get green.
+- New behaviour comes with a test. Bug fixes come with a test that fails without the fix.
+
 ## Testing a change manually
 
-For now the project does not ship an automated test suite (PRs adding pytest coverage are extremely welcome). When you make a change, at minimum:
+Automated tests do not cover real OpenAI calls or real URL fetches. For changes in those areas, at minimum:
 
 1. Restart the API and hit `/health`.
 2. Ingest a fresh URL and verify the document and chunks appear in Postgres.

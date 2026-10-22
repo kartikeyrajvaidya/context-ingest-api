@@ -27,7 +27,8 @@ Small, focused PRs are merged fastest.
 ## How was this tested?
 
 <!--
-At minimum, walk through the manual verification you ran. Examples:
+Paste the output of `pytest` and `bash .github/scripts/mypy_ratchet.sh`.
+Then walk through any manual verification you ran. Examples:
 - Restarted the API and hit /health
 - Ingested https://example.com/post and confirmed N chunks in `chunks` table
 - Ran POST /v1/query with "..." and verified the citations point at the right chunks
@@ -40,6 +41,9 @@ If you added or changed a contract, paste the before/after curl.
 
 - [ ] My code follows the layering rules in `ARCHITECTURE.md` (routes don't call services, actions own transactions)
 - [ ] I ran `pre-commit run --all-files` locally and it passed
+- [ ] I ran `pytest` locally (with Postgres up) and it passed
+- [ ] I ran `bash .github/scripts/mypy_ratchet.sh` and it reported no new errors
+- [ ] I added or updated tests in `tests/` for any behaviour change
 - [ ] I updated `docs/` for any contract or behavior change
 - [ ] I updated `CHANGELOG.md` under `[Unreleased]`
 - [ ] I added or updated migrations in **both** `db/migrations/versions/` and `db/migrations/sql/`
