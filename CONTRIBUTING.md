@@ -83,7 +83,7 @@ bash .github/scripts/mypy_ratchet.sh
 pytest
 ```
 
-- **pytest** lives in `tests/`. OpenAI calls are always mocked. Tests that need Postgres use the `database` fixture: they skip when the database is unreachable locally and fail in CI. To run them, start Postgres (`docker compose up postgres -d`) and apply migrations (`bash db/migrations/migrate.sh`). They write rows with unique `internal://test-...` identifiers to whatever database `DB_CONNECTION_URI_ASYNCPG` points at, so use a dev database.
+- **pytest** lives in `tests/`. OpenAI calls are always mocked. Tests that need Postgres use the `database` fixture: they skip when the database is unreachable locally and fail in CI. To run them, start Postgres (`docker compose up postgres -d`) and apply migrations (`bash db/migrations/migrate.sh`). They write to whatever database `DB_CONNECTION_URI_ASYNCPG` points at and delete their own rows afterwards; still, use a dev database, never production.
 - **mypy** runs as a ratchet. Errors that predate CI are recorded in `.github/mypy-baseline.txt`; any new error fails the build. When you fix a baselined error, shrink the baseline with `bash .github/scripts/mypy_ratchet.sh --update`. Never add to it to get green.
 - New behaviour comes with a test. Bug fixes come with a test that fails without the fix.
 

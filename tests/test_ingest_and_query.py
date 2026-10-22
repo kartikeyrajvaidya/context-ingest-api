@@ -6,14 +6,17 @@ import uuid
 
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy import text as sql_text
 
 from api.server.run_api import app
+from configs.db import DBConfig
+from configs.llm import LLMConfig
 from core.actions.ingest_document import ingest_document
 from core.schema.ingest import IngestRequestSchema
 from core.schema.llm_answer import LLMAnswer
 from db import db
 
-EMBEDDING_DIMENSIONS = 1536
+EMBEDDING_DIMENSIONS = LLMConfig.OPENAI_EMBEDDING_DIMENSIONS
 
 
 async def _fake_embed_texts(texts: list[str]) -> list[list[float]]:
@@ -47,9 +50,38 @@ async def _ingest(request: IngestRequestSchema):
         await db.disconnect()
 
 
+async def _cleanup(document_id: str | None, session_id: str) -> None:
+    """Remove everything the test wrote, so reruns on a dev DB stay green."""
+    schema = DBConfig.SCHEMA_NAME
+    session = await db.get_session()
+    try:
+        await session.execute(
+            sql_text(f"DELETE FROM {schema}.query_responses WHERE session_id = :sid"),
+            {"sid": session_id},
+        )
+        await session.execute(
+            # feedback rows cascade via feedback.query_id ON DELETE CASCADE
+            sql_text(f"DELETE FROM {schema}.query_requests WHERE session_id = :sid"),
+            {"sid": session_id},
+        )
+        if document_id:
+            # chunks cascade via chunks.document_id ON DELETE CASCADE
+            await session.execute(
+                sql_text(f"DELETE FROM {schema}.documents WHERE id = :did"),
+                {"did": document_id},
+            )
+        await session.commit()
+    finally:
+        await session.close()
+        await db.disconnect()
+
+
 def test_ingest_then_query_returns_cited_answer(database, mocked_openai):
-    source_url = f"internal://test-{uuid.uuid4().hex}"
+    run_id = uuid.uuid4().hex
+    source_url = f"internal://test-{run_id}"
+    session_id = f"test-{run_id}"
     text = (
+        f"Test run {run_id}. "
         "Retrieval-augmented generation, or RAG, retrieves relevant passages from a "
         "knowledge base and passes them to a language model so answers cite sources. "
         "Hybrid retrieval combines vector similarity with full-text search and fuses "
@@ -58,25 +90,33 @@ def test_ingest_then_query_returns_cited_answer(database, mocked_openai):
     )
     request = IngestRequestSchema(text=text, title="RAG basics", source_url=source_url)
 
-    first = asyncio.run(_ingest(request))
-    assert first.status == "ingested"
-    assert first.chunks >= 1
-    assert first.document_id
+    document_id = None
+    try:
+        first = asyncio.run(_ingest(request))
+        document_id = first.document_id
+        assert first.status == "ingested"
+        assert first.chunks >= 1
+        assert first.document_id
 
-    second = asyncio.run(_ingest(request))
-    assert second.status == "unchanged"
-    assert second.document_id == first.document_id
+        second = asyncio.run(_ingest(request))
+        assert second.status == "unchanged"
+        assert second.document_id == first.document_id
 
-    with TestClient(app) as client:
-        response = client.post(
-            "/v1/query",
-            json={"question": "What is retrieval-augmented generation?", "session_id": "test"},
-        )
+        with TestClient(app) as client:
+            response = client.post(
+                "/v1/query",
+                json={
+                    "question": "What is retrieval-augmented generation?",
+                    "session_id": session_id,
+                },
+            )
 
-    assert response.status_code == 200
-    data = response.json()["data"]
-    assert data["status"] == "answered"
-    assert data["answer"]
-    assert data["query_id"]
-    assert data["conversation_id"]
-    assert any(c["document_id"] == first.document_id for c in data["citations"])
+        assert response.status_code == 200
+        data = response.json()["data"]
+        assert data["status"] == "answered"
+        assert data["answer"]
+        assert data["query_id"]
+        assert data["conversation_id"]
+        assert any(c["document_id"] == first.document_id for c in data["citations"])
+    finally:
+        asyncio.run(_cleanup(document_id, session_id))

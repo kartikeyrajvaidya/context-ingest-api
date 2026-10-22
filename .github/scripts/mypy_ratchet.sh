@@ -19,11 +19,28 @@ MYPY="${MYPY:-mypy}"
 current="$(mktemp)"
 trap 'rm -f "$current"' EXIT
 
-# mypy exits 1 when it finds errors; that is expected here.
-"$MYPY" . --no-error-summary --hide-error-context --no-pretty \
+# mypy exits 0 (clean) or 1 (type errors). Anything else, or a missing
+# binary, means it did not check the code: fail rather than pass silently.
+set +e
+out="$("$MYPY" . --no-error-summary --hide-error-context --no-pretty 2>&1)"
+rc=$?
+set -e
+if ((rc > 1)); then
+    echo "$out"
+    echo "mypy failed to run (exit $rc)."
+    exit 1
+fi
+
+printf '%s\n' "$out" \
     | grep -E '^[^ ]+:[0-9]+: error:' \
     | sed -E 's/^([^:]+):[0-9]+: /\1: /' \
     | LC_ALL=C sort >"$current" || true
+
+if ((rc == 1)) && [[ ! -s "$current" ]]; then
+    echo "$out"
+    echo "mypy reported errors that could not be parsed."
+    exit 1
+fi
 
 if [[ "${1:-}" == "--update" ]]; then
     cp "$current" "$BASELINE"
@@ -35,9 +52,11 @@ new_errors="$(LC_ALL=C comm -13 "$BASELINE" "$current")"
 fixed_errors="$(LC_ALL=C comm -23 "$BASELINE" "$current")"
 
 if [[ -n "$fixed_errors" ]]; then
+    # Fail so the baseline only ever shrinks: a fixed entry left in place
+    # would let a later PR add an identical error for free.
     echo "These baseline errors are fixed. Run with --update to shrink the baseline:"
     echo "$fixed_errors"
-    echo
+    exit 1
 fi
 
 if [[ -n "$new_errors" ]]; then

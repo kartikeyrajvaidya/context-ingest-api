@@ -79,7 +79,7 @@ Empty body. There is no `feedback_id` returned — v0 has no endpoint that reads
 ### Record positive feedback
 
 ```bash
-curl -sS -X POST http://localhost:8000/v1/feedback \
+curl -sS -X POST http://localhost:8080/v1/feedback \
   -H "Content-Type: application/json" \
   -d '{
     "query_id": "qry_01HFX4G...",
@@ -93,7 +93,7 @@ curl -sS -X POST http://localhost:8000/v1/feedback \
 ### Record negative feedback without a reason
 
 ```bash
-curl -sS -X POST http://localhost:8000/v1/feedback \
+curl -sS -X POST http://localhost:8080/v1/feedback \
   -H "Content-Type: application/json" \
   -d '{
     "query_id": "qry_01HFX4G...",
@@ -109,13 +109,13 @@ Same `query_id`, different rating:
 
 ```bash
 # First call
-curl -sS -X POST http://localhost:8000/v1/feedback \
+curl -sS -X POST http://localhost:8080/v1/feedback \
   -H "Content-Type: application/json" \
   -d '{"query_id": "qry_01HFX4G...", "rating": "helpful"}'
 # → 204
 
 # Second call — replaces the first
-curl -sS -X POST http://localhost:8000/v1/feedback \
+curl -sS -X POST http://localhost:8080/v1/feedback \
   -H "Content-Type: application/json" \
   -d '{"query_id": "qry_01HFX4G...", "rating": "unhelpful", "reason": "on re-reading, the answer is wrong"}'
 # → 204
@@ -126,7 +126,7 @@ After both calls, the `feedback` table contains exactly **one** row for `qry_01H
 ### Unknown query_id
 
 ```bash
-curl -sS -X POST http://localhost:8000/v1/feedback \
+curl -sS -X POST http://localhost:8080/v1/feedback \
   -H "Content-Type: application/json" \
   -d '{"query_id": "qry_doesnotexist", "rating": "helpful"}'
 ```

@@ -230,7 +230,7 @@ No `503` is used in v0 — transient LLM or database outages collapse to `500`.
 ### First turn (no conversation_id)
 
 ```bash
-curl -sS -X POST http://localhost:8000/v1/query \
+curl -sS -X POST http://localhost:8080/v1/query \
   -H "Content-Type: application/json" \
   -d '{
     "question": "How do I configure the chunker?",
@@ -257,7 +257,7 @@ Successful response:
 ### Follow-up turn (echoing conversation_id)
 
 ```bash
-curl -sS -X POST http://localhost:8000/v1/query \
+curl -sS -X POST http://localhost:8080/v1/query \
   -H "Content-Type: application/json" \
   -d '{
     "question": "And how do I tune the overlap?",
@@ -271,7 +271,7 @@ The server fetches prior turns for this `(session_id, conversation_id)` pair and
 ### Validation failure (missing `session_id`)
 
 ```bash
-curl -sS -X POST http://localhost:8000/v1/query \
+curl -sS -X POST http://localhost:8080/v1/query \
   -H "Content-Type: application/json" \
   -d '{"question": "How do I configure the chunker?"}'
 ```
