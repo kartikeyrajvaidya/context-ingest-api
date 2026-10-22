@@ -1,0 +1,47 @@
+# Automated PR review by Claude, on the owner's Claude Team seat (no extra usage).
+# Copy to .github/workflows/claude-review.yml in each repo. See decisions/0008.
+# Needs the CLAUDE_CODE_OAUTH_TOKEN Actions secret (org-level for itrstats repos).
+name: Claude Review
+
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review]
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: "PR number to (re)review"
+        required: true
+
+concurrency:
+  group: claude-review-${{ github.event.pull_request.number || inputs.pr }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    # Skip drafts and fork PRs (forks get no secrets).
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.pull_request.draft == false &&
+       github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      pull-requests: read
+      issues: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          plugin_marketplaces: "https://github.com/anthropics/claude-code.git"
+          plugins: "code-review@claude-code-plugins"
+          prompt: "/code-review:code-review --comment ${{ github.repository }}/pull/${{ github.event.pull_request.number || inputs.pr }}"
+          claude_args: >-
+            --model claude-sonnet-5-5
+            --max-turns 40
+            --allowedTools "mcp__github_inline_comment__create_inline_comment"
+            --append-system-prompt "Review against this repository's REVIEW.md, CLAUDE.md and .claude/rules/*.md as the coding guidelines. Flag only real problems: bugs, rule violations, missing tests for new behaviour, secrets or real taxpayer data, and a PR description missing What / Why / How verified / Risk. Never approve or request changes; comment only."
