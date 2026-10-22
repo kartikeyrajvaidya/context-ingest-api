@@ -32,7 +32,8 @@ def _warn_if_multi_worker() -> None:
             "IP rate limiter is in-memory per process: WEB_CONCURRENCY=%d "
             "detected. Effective ceiling is %d x RATE_LIMIT_IP_PER_MINUTE. "
             "See docs/guides/self-hosting.md Rate limiting.",
-            workers, workers,
+            workers,
+            workers,
         )
 
 
@@ -57,10 +58,7 @@ def _prune_expired() -> None:
     if now - _last_prune < _PRUNE_INTERVAL_SECONDS:
         return
     cutoff = now - _WINDOW_SECONDS
-    expired = [
-        ip for ip, stamps in _ip_timestamps.items()
-        if not stamps or stamps[-1] < cutoff
-    ]
+    expired = [ip for ip, stamps in _ip_timestamps.items() if not stamps or stamps[-1] < cutoff]
     for ip in expired:
         del _ip_timestamps[ip]
     _last_prune = now
@@ -82,7 +80,8 @@ def is_ip_rate_limited(request: Request) -> bool:
         if len(timestamps) >= limit:
             logger.warning(
                 "IP rate limit exceeded ip=%s count=%d",
-                ip, len(timestamps),
+                ip,
+                len(timestamps),
             )
             return True
         timestamps.append(now)

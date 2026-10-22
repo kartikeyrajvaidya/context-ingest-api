@@ -1,7 +1,6 @@
 """SQLAlchemy models for ContextIngest API."""
 
-from .base import Base
-from .base import BaseModel
+from .base import Base, BaseModel
 from .chunks import Chunk
 from .documents import Document
 from .feedback import Feedback

@@ -30,14 +30,6 @@ Most RAG tutorials get you to "hello world" but leave you to build the rest: chu
 - Build an internal knowledge base assistant
 - Create a customer support bot grounded in your help articles
 
-### In production
-
-ContextIngest powers the **Tax AI assistant** on [itrstats.in](https://itrstats.in) -- answering questions about Indian income tax with cited sources from blog posts and guides.
-
-<p align="center">
-  <img src="docs/assets/itrstats-chatbot.png" alt="Tax AI chatbot on itrstats.in powered by ContextIngest" width="700">
-</p>
-
 ---
 
 ## 30-second start

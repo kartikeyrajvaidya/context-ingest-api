@@ -13,15 +13,7 @@ candidate limits, then the top_k of the fused ranking is returned.
 from collections.abc import AsyncIterator
 
 from pgvector.sqlalchemy import Vector
-from sqlalchemy import Column
-from sqlalchemy import Computed
-from sqlalchemy import ForeignKey
-from sqlalchemy import Integer
-from sqlalchemy import Text
-from sqlalchemy import delete
-from sqlalchemy import func
-from sqlalchemy import select
-from sqlalchemy import text
+from sqlalchemy import Column, Computed, ForeignKey, Integer, Text, delete, func, select, text
 from sqlalchemy.dialects.postgresql import TSVECTOR
 from sqlalchemy.engine import Row
 
@@ -72,17 +64,11 @@ class Chunk(BaseModel):
         return int(result.scalar_one())
 
     @classmethod
-    async def iter_for_reembed(
-        cls, batch_size: int
-    ) -> AsyncIterator[list[tuple[str, str]]]:
+    async def iter_for_reembed(cls, batch_size: int) -> AsyncIterator[list[tuple[str, str]]]:
         last_id: str | None = None
         while True:
             db_session = await db.get_session()
-            stmt = (
-                select(cls.id, cls.chunk_text)
-                .order_by(cls.id.asc())
-                .limit(batch_size)
-            )
+            stmt = select(cls.id, cls.chunk_text).order_by(cls.id.asc()).limit(batch_size)
             if last_id is not None:
                 stmt = stmt.where(cls.id > last_id)
             result = await db_session.execute(stmt)
@@ -93,9 +79,7 @@ class Chunk(BaseModel):
             last_id = rows[-1].id
 
     @classmethod
-    async def update_embeddings_bulk(
-        cls, updates: list[tuple[str, list[float]]]
-    ) -> int:
+    async def update_embeddings_bulk(cls, updates: list[tuple[str, list[float]]]) -> int:
         if not updates:
             return 0
         schema = DBConfig.SCHEMA_NAME

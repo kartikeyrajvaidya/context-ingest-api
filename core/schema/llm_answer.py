@@ -8,9 +8,7 @@ so the LLM contract can evolve without touching the public API.
 
 from typing import Literal
 
-from pydantic import BaseModel
-from pydantic import ConfigDict
-from pydantic import Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class LLMAnswer(BaseModel):

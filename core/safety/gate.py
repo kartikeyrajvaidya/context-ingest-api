@@ -31,7 +31,7 @@ async def check_input(question: str) -> GateResult:
 
     try:
         verdict = await classify_question(question)
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         logger.error("Safety classifier error: %s", exc)
         return GateResult(True, "error", f"classifier: {exc}")
 

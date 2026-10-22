@@ -1,0 +1,5 @@
+# Development and CI tooling. Runtime deps stay in requirements.txt.
+-r requirements.txt
+mypy==2.4.0
+pytest==9.1.1
+ruff==0.8.4

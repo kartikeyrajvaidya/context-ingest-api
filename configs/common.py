@@ -1,6 +1,7 @@
 """Common runtime configuration for ContextIngest API."""
 
 import os
+from typing import ClassVar
 
 
 class CommonConfig:
@@ -10,7 +11,7 @@ class CommonConfig:
     ENVIRONMENT = os.getenv("ENVIRONMENT", "dev")
     LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
 
-    CORS_ALLOWED_ORIGINS = [
+    CORS_ALLOWED_ORIGINS: ClassVar[list[str]] = [
         origin.strip()
         for origin in os.getenv(
             "CORS_ALLOWED_ORIGINS",

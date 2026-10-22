@@ -16,14 +16,10 @@ that doesn't belong to their `session_id`. The `cnv_` prefix follows the
 the same `_generate_random_string(10)` helper as `BaseModel.create`.
 """
 
-from sqlalchemy import Column
-from sqlalchemy import Text
-from sqlalchemy import func
-from sqlalchemy import select
+from sqlalchemy import Column, Text, func, select
 
 from db import db
-from db.models.base import BaseModel
-from db.models.base import _generate_random_string
+from db.models.base import BaseModel, _generate_random_string
 
 
 class QueryRequest(BaseModel):

@@ -43,7 +43,7 @@ def main() -> int:
     load_dotenv()
     try:
         return asyncio.run(_run())
-    except Exception:  # noqa: BLE001
+    except Exception:
         traceback.print_exc()
         return 3
 

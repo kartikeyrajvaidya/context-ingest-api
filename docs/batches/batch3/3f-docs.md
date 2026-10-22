@@ -155,7 +155,7 @@ The bar for a docs batch is "would a stranger succeed by following this?". Parti
 
 ### Preconditions
 
-A clean checkout of `main` with 3a–3e shipped. `docker compose down -v && docker compose up --build -d` produces a running API on `:8080` and Postgres on `:5432`. A scratch directory on a machine that has Docker + an OpenAI key and has never seen this repo.
+A clean checkout of `master` with 3a–3e shipped. `docker compose down -v && docker compose up --build -d` produces a running API on `:8080` and Postgres on `:5432`. A scratch directory on a machine that has Docker + an OpenAI key and has never seen this repo.
 
 ### Test cases
 
@@ -175,7 +175,7 @@ A clean checkout of `main` with 3a–3e shipped. `docker compose down -v && dock
 
 **D8. No stale "planned" claims.** `rg 'planned|TBD|TODO|coming soon' docs/api/ docs/architecture/ docs/guides/` → zero hits for anything that already shipped. The only tolerated occurrences are forward links to `docs/batches/*`.
 
-**D9. Layering rules consistent.** `docs/architecture/overview.md`, `ARCHITECTURE.md`, and `skills/context-ingest-api-backend/*` carry the same nine rules (wording can vary; the rules cannot).
+**D9. Layering rules consistent.** `docs/architecture/overview.md`, `ARCHITECTURE.md`, and `.claude/skills/context-ingest-api-backend/*` carry the same nine rules (wording can vary; the rules cannot).
 
 **D10. CHANGELOG bullet covers every file.** The `[Unreleased]` bullet from §5.13 names every file created or touched.
 

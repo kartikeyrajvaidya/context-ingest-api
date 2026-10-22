@@ -37,7 +37,7 @@ Homepage      = "https://github.com/kartikeyrajvaidya/context-ingest-api"
 Documentation = "https://github.com/kartikeyrajvaidya/context-ingest-api#readme"
 Repository    = "https://github.com/kartikeyrajvaidya/context-ingest-api"
 Issues        = "https://github.com/kartikeyrajvaidya/context-ingest-api/issues"
-Changelog     = "https://github.com/kartikeyrajvaidya/context-ingest-api/blob/main/CHANGELOG.md"
+Changelog     = "https://github.com/kartikeyrajvaidya/context-ingest-api/blob/master/CHANGELOG.md"
 
 # ContextIngest API is consumed as a service, not a library. requirements.txt is the
 # source of truth for runtime deps. pyproject.toml exists here for tool config
@@ -98,3 +98,6 @@ exclude = [
     ".venv",
     "db/migrations/versions",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

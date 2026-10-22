@@ -10,9 +10,7 @@ trace in the response body.
 
 import json
 
-from fastapi import FastAPI
-from fastapi import HTTPException
-from fastapi import Request
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
@@ -25,9 +23,9 @@ def make_json_safe(obj):
     """Recursively coerce a value into something `json.dumps` will accept."""
     if obj is None:
         return None
-    if isinstance(obj, (str, int, float, bool)):
+    if isinstance(obj, str | int | float | bool):
         return obj
-    if isinstance(obj, (list, tuple)):
+    if isinstance(obj, list | tuple):
         return [make_json_safe(item) for item in obj]
     if isinstance(obj, dict):
         return {str(key): make_json_safe(value) for key, value in obj.items()}
@@ -61,12 +59,10 @@ def setup_exception_handlers(app: FastAPI) -> None:
                     "type": make_json_safe(error.get("type", "validation_error")),
                     "loc": make_json_safe(error.get("loc", [])),
                     "msg": make_json_safe(error.get("msg", "Validation error")),
-                    "input": make_json_safe(error.get("input"))
-                    if "input" in error
-                    else None,
+                    "input": make_json_safe(error.get("input")) if "input" in error else None,
                 }
 
-                if "ctx" in error and error["ctx"]:
+                if error.get("ctx"):
                     safe_error["ctx"] = make_json_safe(error["ctx"])
 
                 safe_errors.append(safe_error)

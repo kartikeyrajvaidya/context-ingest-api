@@ -40,7 +40,7 @@
 
 ## Reconciliation (folded in — no separate PR)
 
-The code originally merged as part of the old Batch 2 had full table bodies in `0001.sql` and full column definitions in each model. Reconciliation was applied directly on `main`:
+The code originally merged as part of the old Batch 2 had full table bodies in `0001.sql` and full column definitions in each model. Reconciliation was applied directly on `master`:
 
 1. **Emptied** `db/migrations/sql/0001.sql` — comment header only, no DDL.
 2. **Stripped** `db/models/{documents,chunks,queries,feedback}.py` bodies down to the minimal stub shape described above.

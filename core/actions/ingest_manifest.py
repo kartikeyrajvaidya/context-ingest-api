@@ -79,7 +79,7 @@ async def ingest_manifest() -> dict[str, int]:
                 response.document_id,
                 response.chunks,
             )
-        except Exception:  # noqa: BLE001
+        except Exception:
             logger.error("Failed to ingest: %s", url, exc_info=True)
             tallies["failed"] += 1
 
@@ -91,8 +91,6 @@ async def ingest_manifest() -> dict[str, int]:
     )
 
     if tallies["failed"] > 0:
-        raise IngestManifestError(
-            f"{tallies['failed']} of {len(sources)} entries failed"
-        )
+        raise IngestManifestError(f"{tallies['failed']} of {len(sources)} entries failed")
 
     return tallies

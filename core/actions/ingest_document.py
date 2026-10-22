@@ -9,13 +9,10 @@ exits non-zero.
 
 import hashlib
 
-from core.ingestion import cleaner
-from core.ingestion import fetcher
-from core.ingestion import pipeline
+from core.ingestion import cleaner, fetcher, pipeline
 from core.ingestion.cleaner import EmptyContentError
 from core.ingestion.fetcher import FetchError
-from core.schema.ingest import IngestRequestSchema
-from core.schema.ingest import IngestResponseSchema
+from core.schema.ingest import IngestRequestSchema, IngestResponseSchema
 from db.sqlalchemy.transaction import commit_transaction_async
 from libs.logger import get_logger
 
@@ -68,9 +65,7 @@ async def ingest_document(request: IngestRequestSchema) -> IngestResponseSchema:
                 title=title,
             )
     except EmptyContentError as exc:
-        logger.warning(
-            "Ingest failed (empty after chunk): source=%s reason=%s", source_url, exc
-        )
+        logger.warning("Ingest failed (empty after chunk): source=%s reason=%s", source_url, exc)
         return _failed()
 
     logger.info(

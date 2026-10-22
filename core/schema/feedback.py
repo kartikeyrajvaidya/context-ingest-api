@@ -17,10 +17,7 @@ The endpoint returns `204 No Content` on success, so there is no response
 model.
 """
 
-from pydantic import BaseModel
-from pydantic import ConfigDict
-from pydantic import Field
-from pydantic import field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class FeedbackRequestSchema(BaseModel):

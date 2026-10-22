@@ -9,11 +9,7 @@ schemas unchanged. See `docs/scaffolding-plan.md` for the rationale.
 
 from typing import Literal
 
-from pydantic import BaseModel
-from pydantic import ConfigDict
-from pydantic import Field
-from pydantic import HttpUrl
-from pydantic import model_validator
+from pydantic import BaseModel, ConfigDict, Field, HttpUrl, model_validator
 
 
 class IngestRequestSchema(BaseModel):

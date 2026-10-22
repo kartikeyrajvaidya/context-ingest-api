@@ -1,11 +1,8 @@
 """POST /v1/feedback — record user feedback against a prior query."""
 
-from fastapi import APIRouter
-from fastapi import HTTPException
-from fastapi import Response
+from fastapi import APIRouter, HTTPException, Response
 
-from core.actions.record_feedback import QueryNotFoundError
-from core.actions.record_feedback import record_feedback
+from core.actions.record_feedback import QueryNotFoundError, record_feedback
 from core.schema.feedback import FeedbackRequestSchema
 
 router = APIRouter()
