@@ -14,7 +14,7 @@ For the *architectural plan* (stack, decisions, directory tree, non-goals), see 
 
 | Symbol | Meaning |
 |---|---|
-| ✅ | Done — shipped on `main` and acceptance criteria met. |
+| ✅ | Done — shipped on `master` and acceptance criteria met. |
 | 🟡 | Done with caveats — shipped, but a follow-up PR is owed (see notes). |
 | ⏳ | Next up — not started, but unblocked and ready to begin. |
 | ⏸ | Paused — blocked on another batch. |
@@ -26,7 +26,7 @@ For the *architectural plan* (stack, decisions, directory tree, non-goals), see 
 |---|---|---|---|
 | 1 — Repo skeleton & meta docs | ✅ | README, ARCHITECTURE, LICENSE, Docker, env. | [1-repo-skeleton.md](./batch1/1-repo-skeleton.md) |
 | 1.5 — OSS hygiene | ✅ | CoC, SECURITY, pyproject, pre-commit, CI, issue/PR templates. | [1.5-oss-hygiene.md](./batch1/1.5-oss-hygiene.md) |
-| 2a — App skeleton (no schema, no tables) | ✅ | Reconciled on `main`: 0001 temporarily emptied; model bodies stripped to id-only stubs; Alembic wrapper tolerated empty SQL. Subsequently superseded by 2c, which overwrote `0001.sql` with the real schema once the "init" suffix was dropped. | [2a-app-skeleton.md](./batch2/2a-app-skeleton.md) |
+| 2a — App skeleton (no schema, no tables) | ✅ | Reconciled on `master`: 0001 temporarily emptied; model bodies stripped to id-only stubs; Alembic wrapper tolerated empty SQL. Subsequently superseded by 2c, which overwrote `0001.sql` with the real schema once the "init" suffix was dropped. | [2a-app-skeleton.md](./batch2/2a-app-skeleton.md) |
 | 2b — API contracts & schemas (contract-first) | ✅ | Both contracts frozen; schemas updated; `docs/api/{query,feedback}.md` shipped and linked from README. Feedback uses **replace semantics** (atomic upsert; carry-over to 2c = `UNIQUE(query_id)` + `created_at`→`updated_at`). | [2b-contracts-and-schemas.md](./batch2/2b-contracts-and-schemas.md) |
 | 2c — Database schema & migrations | ✅ | Live-verified 2026-04-15: `docker compose up --build` on a fresh volume applied `0001.sql` and `0002.sql` clean, Alembic ran both migrations, API booted. | [2c-migrations-and-tables.md](./batch2/2c-migrations-and-tables.md) |
 | 3a — Ingestion pipeline (CLI-only) | ✅ | Shipped + acceptance pass 2026-04-15. Fetcher, cleaner (HTML + markdown), recursive chunker, rerun-safe pipeline, action owning the transaction, OpenAI embeddings adapter with sub-batch splitting. CLI subsequently consolidated to `scripts/ingest_all.py` (manifest-driven, reads `data/sources.json`) + `scripts/ingest_one.py` (ad-hoc single item); see scaffolding-plan §Deviations. | [3a-ingestion-pipeline.md](./batch3/3a-ingestion-pipeline.md) |

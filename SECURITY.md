@@ -39,7 +39,7 @@ If you prefer encrypted communication, ask in your initial email and we will exc
 |-------|--------|
 | Acknowledgement of report | within **3 business days** |
 | Initial assessment (severity, in-scope?) | within **7 business days** |
-| Fix or mitigation in `main` | within **30 days** for high/critical, **90 days** for low/medium |
+| Fix or mitigation in `master` | within **30 days** for high/critical, **90 days** for low/medium |
 | Public disclosure (advisory + release) | coordinated with reporter, default **90 days** after report |
 
 We will keep you updated as the investigation progresses, even if there is no new information.
