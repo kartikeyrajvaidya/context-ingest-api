@@ -42,3 +42,6 @@ postgres-data/
 # Logs
 *.log
 logs/
+
+# Claude Code personal settings
+.claude/settings.local.json

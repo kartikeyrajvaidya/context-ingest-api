@@ -7,6 +7,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ## [Unreleased]
 
 ### Added
+- Test suite: `tests/` with pytest covering `GET /health`, request validation errors, and an ingest-then-query path against real Postgres with OpenAI mocked. Dev tooling pinned in `requirements-dev.txt`.
+- CI: `mypy` job as a ratchet (`.github/scripts/mypy_ratchet.sh` fails on errors not in `.github/mypy-baseline.txt`) and a `pytest` job with a pgvector service container. The Docker build now waits on all checks.
+- Contributor tooling for Claude Code: `CLAUDE.md`, `REVIEW.md` for automated PR review, and `.claude/settings.json` with a hook that runs ruff on every edited Python file.
 - Public documentation (Batch 3f): `README.md` and `ARCHITECTURE.md` refreshed to match shipped behavior. New architecture docs: `docs/architecture/{overview,schema,ingestion-pipeline,retrieval}.md`. New guides: `docs/guides/{quickstart,ingestion,tuning-retrieval,self-hosting}.md`. API contract for ingest: `docs/api/ingest.md`. No code changes.
 - Ingest endpoint (Batch 3h): `POST /v1/ingest` — manifest-driven ingestion over HTTP. No request body, reads `data/sources.json`, rerun-safe via content-hash comparison. Returns `{"data": {"ok": true}}` on success, 500 on failure. All per-entry operational detail (document IDs, chunk counts, errors) goes to server logs only — the HTTP response is deliberately minimal for a public API. Shared action in `core/actions/ingest_manifest.py` used by both the HTTP route and the CLI script (`scripts/ingest_all.py`). Not rate-limited (content-hash gate makes repeated calls free). Contract doc at `docs/api/ingest.md`.
 - Safety classifier (Batch 3g): two-layer pre-LLM safety gate (regex heuristics + cheap LLM classifier), `SAFETY_ENABLED` toggle (default true), `SAFETY_LLM_MODEL` (default `gpt-4o-mini`). Detects prompt injection and jailbreak attempts. Fail-closed: classifier errors block the request. Client-facing `status` field on `QueryResponseSchema` (`answered|no_answer|refused|error`). `response_payload` JSONB consolidation on `query_responses` table (replaces five individual columns with a single JSONB column).
@@ -29,4 +32,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Ingestion pipeline (Batch 3a, CLI-only): `core/services/embeddings.py` (OpenAI embeddings adapter with sub-batch splitting), `core/ingestion/{fetcher,cleaner,chunker,pipeline}.py` (httpx fetcher, trafilatura + markdown cleaner, token-bounded recursive chunker with overlap, rerun-safe hash/chunk/embed/persist pipeline), `core/actions/ingest_document.py` (single action owning the transaction boundary and mapping non-fatal failures to `status: "failed"`), and `scripts/ingest_url.py` + `scripts/ingest_batch.py` for single-URL and newline-list ingestion.
 - Backend skeleton (Batch 2): env-driven config (`configs/{common,db,llm,rate_limit}.py`), async SQLAlchemy engine + scoped session (`db/connections/context_ingest_db.py`), declarative models for `documents`, `chunks` (with pgvector + tsvector), `queries`, `feedback`, raw-SQL + Alembic init migration with HNSW and GIN indexes, FastAPI boot module with CORS, IP rate-limit middleware (no-op until Batch 3c), error handlers, request-validation helper for the `{"data": {...}}` envelope, working `GET /health` route, `501` stubs for `/v1/query` and `/v1/feedback`, and Pydantic schemas under `core/schema/`. (Batch 2 also shipped a `501` stub for `/v1/ingest`; that stub is removed in Batch 3a, which makes ingestion CLI-only.)
 
-[Unreleased]: https://github.com/kartikeyrajvaidya/context-ingest-api/commits/main
+### Changed
+- CI now triggers on `master`, the default branch. It previously targeted `main` and never ran on pull requests. Existing ruff lint and format errors are fixed so the lint job passes.
+- Repo-local skills moved from `skills/` to `.claude/skills/` so Claude Code discovers them. The unused `agents/openai.yaml` files are removed.
+- Branch links and docs updated from `main` to `master`.
+- README: removed the production usage section and its screenshot to keep the project description standalone.
+
+[Unreleased]: https://github.com/kartikeyrajvaidya/context-ingest-api/commits/master
