@@ -8,10 +8,12 @@ when many run concurrently. A lazy sync engine is kept around for Alembic.
 from asyncio import current_task
 
 from sqlalchemy import create_engine
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.ext.asyncio import async_scoped_session
-from sqlalchemy.ext.asyncio import async_sessionmaker
-from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    async_scoped_session,
+    async_sessionmaker,
+    create_async_engine,
+)
 from sqlalchemy.pool import NullPool
 
 from configs.db import DBConfig
@@ -26,7 +28,7 @@ class ContextIngestDB:
     def __get_sync_engine_opts(cls):
         return {
             "connect_args": {
-                "options": "-c statement_timeout={0}".format(DBConfig.DB_STATEMENT_TIMEOUT),
+                "options": f"-c statement_timeout={DBConfig.DB_STATEMENT_TIMEOUT}",
                 "application_name": DBConfig.DB_APPLICATION_NAME,
             },
             "echo": DBConfig.DB_ECHO,

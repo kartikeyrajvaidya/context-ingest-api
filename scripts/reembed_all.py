@@ -55,14 +55,18 @@ async def _run(batch_size: int, dry_run: bool) -> None:
                     await Chunk.update_embeddings_bulk(
                         [
                             (chunk_id, emb)
-                            for (chunk_id, _), emb in zip(batch, new_embeddings)
+                            for (chunk_id, _), emb in zip(batch, new_embeddings, strict=False)
                         ]
                     )
             done += len(batch)
             elapsed = time.monotonic() - started
             logger.info(
                 "reembedded chunks=%d/%d elapsed_s=%.1f model=%s dry_run=%s",
-                done, total, elapsed, model, dry_run,
+                done,
+                total,
+                elapsed,
+                model,
+                dry_run,
             )
 
         elapsed = time.monotonic() - started
@@ -82,7 +86,7 @@ def main() -> int:
     try:
         asyncio.run(_run(args.batch_size, args.dry_run))
         return 0
-    except Exception:  # noqa: BLE001
+    except Exception:
         traceback.print_exc()
         return 3
 

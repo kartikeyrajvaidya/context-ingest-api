@@ -19,7 +19,7 @@ schema_name = DBConfig.SCHEMA_NAME
 
 
 def run_migrations_online():
-    def process_revision_directives(context, revision, directives):  # noqa: ARG001
+    def process_revision_directives(context, revision, directives):
         if getattr(config.cmd_opts, "autogenerate", False):
             script = directives[0]
             if script.upgrade_ops.is_empty():

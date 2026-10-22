@@ -14,11 +14,7 @@ changes to the response are code-only — no migration needed. `status` stays
 as a top-level column because it is indexed and filtered for analytics.
 """
 
-from sqlalchemy import Column
-from sqlalchemy import ForeignKey
-from sqlalchemy import Text
-from sqlalchemy import desc
-from sqlalchemy import select
+from sqlalchemy import Column, ForeignKey, Text, desc, select
 from sqlalchemy.dialects.postgresql import JSONB
 
 from configs.db import DBConfig

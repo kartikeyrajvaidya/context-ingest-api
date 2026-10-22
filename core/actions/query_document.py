@@ -15,13 +15,9 @@ assembled server-side from known state.
 """
 
 from configs.llm import LLMConfig
-from core.schema.query import CitationSchema
-from core.schema.query import ClientStatus
-from core.schema.query import QueryRequestSchema
-from core.schema.query import QueryResponseSchema
+from core.schema.query import CitationSchema, ClientStatus, QueryRequestSchema, QueryResponseSchema
 from core.schema.retrieval_result import RetrievedChunk
-from core.services.llm import LLMParseError
-from core.services.llm import generate_answer
+from core.services.llm import LLMParseError, generate_answer
 from core.services.retrieval import retrieve_relevant_chunks
 from db.models.query_requests import QueryRequest
 from db.models.query_responses import QueryResponse
@@ -103,7 +99,7 @@ async def query_document(request: QueryRequestSchema) -> QueryResponseSchema:
     retrieval_ok = True
     try:
         chunks = await retrieve_relevant_chunks(question=request.question)
-    except Exception:  # noqa: BLE001
+    except Exception:
         logger.warning(
             "Retrieval failed for request_id=%s, falling back to no-answer",
             query_request.id,

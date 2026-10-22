@@ -6,10 +6,8 @@ reach through `db.get_session()`.
 """
 
 import hashlib
-from datetime import datetime
-from datetime import timezone
-from typing import Literal
-from typing import NamedTuple
+from datetime import UTC, datetime
+from typing import Literal, NamedTuple
 
 from configs.llm import LLMConfig
 from core.ingestion.chunker import chunk_text
@@ -47,7 +45,7 @@ async def ingest(
 
     embeddings = await embed_texts(chunks)
 
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     if existing:
         await Chunk.delete_by_document_id(existing.id)
         existing.content_hash = content_hash
@@ -70,7 +68,7 @@ async def ingest(
         )
         document_id = created.id
 
-    for idx, (chunk_str, embedding) in enumerate(zip(chunks, embeddings)):
+    for idx, (chunk_str, embedding) in enumerate(zip(chunks, embeddings, strict=False)):
         await Chunk.create(
             Chunk(
                 document_id=document_id,

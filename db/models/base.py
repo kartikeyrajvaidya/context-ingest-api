@@ -3,12 +3,9 @@
 import secrets
 import string
 from abc import abstractmethod
-from datetime import datetime
-from datetime import timezone
+from datetime import UTC, datetime
 
-from sqlalchemy import TIMESTAMP
-from sqlalchemy import Column
-from sqlalchemy import select
+from sqlalchemy import TIMESTAMP, Column, select
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.sql.elements import BinaryExpression
 
@@ -22,10 +19,10 @@ def _generate_random_string(string_length: int = 10) -> str:
 
 
 class Base(DeclarativeBase):
-    __table_args__ = {"schema": DBConfig.SCHEMA_NAME}
+    __table_args__ = {"schema": DBConfig.SCHEMA_NAME}  # noqa: RUF012
 
     def __repr__(self) -> str:
-        return "%s" % (self.__dict__)
+        return f"{self.__dict__}"
 
     def to_dict(self) -> dict:
         return {key: value for key, value in self.__dict__.items() if not key.startswith("_")}
@@ -50,7 +47,7 @@ class BaseModel(Base):
 
     created_at = Column(
         TIMESTAMP(timezone=True),
-        default=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
     )
 
     @classmethod
@@ -58,7 +55,7 @@ class BaseModel(Base):
         db_session = await db.get_session()
         if getattr(model_object, "id", None) is None:
             model_object.id = cls.get_id_prefix() + _generate_random_string(10)
-        model_object.created_at = datetime.now(timezone.utc)
+        model_object.created_at = datetime.now(UTC)
         db_session.add(model_object)
         await db_session.flush([model_object])
         return await cls.get_by_id(model_object.id)

@@ -6,12 +6,7 @@ that has been fetched, cleaned, chunked, and embedded. The `source_url` is
 and cascades a chunk replacement via the FK on `chunks.document_id`.
 """
 
-from sqlalchemy import TIMESTAMP
-from sqlalchemy import Boolean
-from sqlalchemy import Column
-from sqlalchemy import Integer
-from sqlalchemy import Text
-from sqlalchemy import select
+from sqlalchemy import TIMESTAMP, Boolean, Column, Integer, Text, select
 
 from db import db
 from db.models.base import BaseModel

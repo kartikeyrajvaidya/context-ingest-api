@@ -10,8 +10,7 @@ from configs.llm import LLMConfig
 from core.schema.llm_answer import LLMAnswer
 from core.schema.retrieval_result import RetrievedChunk
 from core.services.openai_client import get_openai_client
-from core.services.prompts import build_answer_system_prompt
-from core.services.prompts import build_answer_user_prompt
+from core.services.prompts import build_answer_system_prompt, build_answer_user_prompt
 from libs.logger import get_logger
 
 logger = get_logger(__name__)

@@ -13,8 +13,7 @@ retrieved-context block so an unusually large chunk set can't blow past
 the model's input window.
 """
 
-from datetime import datetime
-from datetime import timezone
+from datetime import UTC, datetime
 
 import tiktoken
 
@@ -113,7 +112,7 @@ def build_answer_user_prompt(
     retrieved_chunks: list[RetrievedChunk],
 ) -> str:
     """Build the user-role prompt for the answer-composition call."""
-    current_date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    current_date = datetime.now(UTC).strftime("%Y-%m-%d")
     conversation_context = _build_conversation_context(conversation_turns)
 
     chunks_for_prompt = _fit_chunks_to_budget(retrieved_chunks)

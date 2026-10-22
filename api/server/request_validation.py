@@ -1,11 +1,9 @@
 """Request validation helpers for the wrapped `{"data": {...}}` envelope."""
 
-from typing import Any
-from typing import TypeVar
+from typing import Any, TypeVar
 
 from fastapi.exceptions import RequestValidationError
-from pydantic import BaseModel
-from pydantic import ValidationError
+from pydantic import BaseModel, ValidationError
 
 SchemaType = TypeVar("SchemaType", bound=BaseModel)
 

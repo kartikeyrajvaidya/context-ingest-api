@@ -12,11 +12,10 @@ _RATE_LIMITED_PREFIXES = ("/v1/query", "/v1/feedback", "/v1/ingest")
 class IPRateLimitMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         path = request.url.path
-        if any(path.startswith(p) for p in _RATE_LIMITED_PREFIXES):
-            if is_ip_rate_limited(request):
-                return JSONResponse(
-                    status_code=429,
-                    content={"message": "Too many requests. Please try again later."},
-                    headers={"Retry-After": "60"},
-                )
+        if any(path.startswith(p) for p in _RATE_LIMITED_PREFIXES) and is_ip_rate_limited(request):
+            return JSONResponse(
+                status_code=429,
+                content={"message": "Too many requests. Please try again later."},
+                headers={"Retry-After": "60"},
+            )
         return await call_next(request)

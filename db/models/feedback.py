@@ -12,19 +12,14 @@ every replace. Upsert-on-conflict preserves the existing `created_at`
 and only touches `rating`, `reason`, and `updated_at`.
 """
 
-from datetime import datetime
-from datetime import timezone
+from datetime import UTC, datetime
 
-from sqlalchemy import TIMESTAMP
-from sqlalchemy import Column
-from sqlalchemy import ForeignKey
-from sqlalchemy import Text
+from sqlalchemy import TIMESTAMP, Column, ForeignKey, Text
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 
 from configs.db import DBConfig
 from db import db
-from db.models.base import BaseModel
-from db.models.base import _generate_random_string
+from db.models.base import BaseModel, _generate_random_string
 
 
 class Feedback(BaseModel):
@@ -45,7 +40,7 @@ class Feedback(BaseModel):
     updated_at = Column(
         TIMESTAMP(timezone=True),
         nullable=False,
-        default=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
     )
 
     @classmethod
@@ -67,7 +62,7 @@ class Feedback(BaseModel):
         timestamp alone.
         """
         db_session = await db.get_session()
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         stmt = (
             pg_insert(cls)
             .values(

@@ -72,9 +72,7 @@ async def _run(request: IngestRequestSchema, display: str) -> int:
         await db.disconnect()
 
     document_id = response.document_id or "-"
-    sys.stdout.write(
-        f"{document_id} {response.status} chunks={response.chunks} {display}\n"
-    )
+    sys.stdout.write(f"{document_id} {response.status} chunks={response.chunks} {display}\n")
     return 0 if response.status in ("ingested", "unchanged") else 1
 
 
@@ -88,7 +86,7 @@ def main() -> int:
         return 2
     try:
         return asyncio.run(_run(request, display))
-    except Exception:  # noqa: BLE001
+    except Exception:
         traceback.print_exc()
         return 3
 
