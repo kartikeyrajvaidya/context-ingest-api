@@ -2,7 +2,7 @@
 
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.routes.feedback import router as feedback_router
@@ -13,6 +13,7 @@ from api.server.errorhandlers import setup_exception_handlers
 from api.server.middleware import IPRateLimitMiddleware
 from configs.common import CommonConfig
 from db import db
+from db.sqlalchemy.transaction import release_session_dependency
 from libs.logger import get_logger
 
 logger = get_logger(__name__)
@@ -55,6 +56,7 @@ app = FastAPI(
     redirect_slashes=False,
     openapi_url="/openapi.json",
     lifespan=lifespan,
+    dependencies=[Depends(release_session_dependency)],
 )
 
 setup_middleware(app)

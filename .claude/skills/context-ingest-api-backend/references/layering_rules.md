@@ -78,6 +78,7 @@ Model fetch helpers for one concrete table live as classmethods on that model cl
 - Actions own the transaction. The transaction context manager lives in `db/sqlalchemy/transaction.py`.
 - One action = one transaction. If two actions need to coordinate, that's a sign one of them should be merged into the other.
 - A failed action leaves the database untouched.
+- `db.session` is scoped to the current asyncio task. Reads outside `commit_transaction_async` open a transaction that stays open until the session is removed. The app-wide `release_session_dependency` removes it when each request ends; inside an action, call `release_session()` before any embeddings or LLM call so no connection is held across network I/O.
 
 ### Pydantic schemas
 
