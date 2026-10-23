@@ -17,7 +17,7 @@ class SafetyVerdict(BaseModel):
     reason: str = Field(max_length=200)
 
 
-async def classify_question(question: str) -> SafetyVerdict:
+async def classify_question(question: str) -> SafetyVerdict | None:
     client = get_openai_client()
     completion = await client.chat.completions.parse(
         model=SafetyConfig.LLM_MODEL,

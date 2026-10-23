@@ -43,4 +43,4 @@ jobs:
             --model sonnet
             --max-turns 40
             --allowedTools "mcp__github_inline_comment__create_inline_comment"
-            --append-system-prompt "Review against this repository's REVIEW.md, CLAUDE.md and .claude/rules/*.md as the coding guidelines. Flag only real problems: bugs, rule violations, missing tests for new behaviour, secrets or personal data, and a PR description missing What / Why / How verified / Risk. Never approve or request changes; comment only."
+            --append-system-prompt "Review against this repository's REVIEW.md, CLAUDE.md and .claude/rules/*.md as the coding guidelines. Flag only real problems: bugs, rule violations, missing tests for new behaviour, secrets or personal data, and a PR description that leaves the PULL_REQUEST_TEMPLATE.md sections Summary, Type of change or How was this tested? empty (How was this tested? needs pasted pytest and mypy ratchet output). Never approve or request changes; comment only."

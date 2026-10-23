@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Security
+- Per-IP rate limit: `CF-Connecting-IP` and `X-Forwarded-For` are ignored unless the new `TRUST_FORWARDED_HEADERS` setting is on (default off), so clients can no longer rotate a spoofed header to bypass the limit. When trusted, the last `X-Forwarded-For` entry is used instead of the first. Deployments behind a reverse proxy must set `TRUST_FORWARDED_HEADERS=true`; see `docs/guides/self-hosting.md`.
+
+### Fixed
+- Database sessions are released on every request exit path, including the 429 rate-limit, refused and feedback 404 responses. An app-wide dependency removes the task-scoped session when each request ends; before this, reads outside a commit block left a transaction and connection open.
+- `POST /v1/query` no longer holds a database transaction across the embeddings and LLM calls.
+- The safety gate refuses the request when the classifier returns no verdict (a model refusal) instead of failing with a 500.
+- `scripts/ingest_all.py`, `ingest_one.py` and `reembed_all.py` load `.env` before application config is imported, so `.env` values now take effect.
+- Claude Review checks PR descriptions against the sections in `PULL_REQUEST_TEMPLATE.md`.
+
 ### Added
 - Test suite: `tests/` with pytest covering `GET /health`, request validation errors, and an ingest-then-query path against real Postgres with OpenAI mocked. Dev tooling pinned in `requirements-dev.txt`.
 - CI: `mypy` job as a ratchet (`.github/scripts/mypy_ratchet.sh` fails on errors not in `.github/mypy-baseline.txt`) and a `pytest` job with a pgvector service container. The Docker build now waits on all checks.

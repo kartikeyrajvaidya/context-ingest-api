@@ -19,8 +19,6 @@ import sys
 import traceback
 from pathlib import Path
 
-from dotenv import load_dotenv
-
 from core.actions.ingest_document import ingest_document
 from core.ingestion.cleaner import clean_raw_text
 from core.schema.ingest import IngestRequestSchema
@@ -77,7 +75,6 @@ async def _run(request: IngestRequestSchema, display: str) -> int:
 
 
 def main() -> int:
-    load_dotenv()
     args = _parse_args(sys.argv[1:])
     try:
         request, display = _build_request(args)

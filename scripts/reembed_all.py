@@ -20,8 +20,6 @@ import sys
 import time
 import traceback
 
-from dotenv import load_dotenv
-
 from configs.llm import LLMConfig
 from core.services.embeddings import embed_texts
 from db import db
@@ -81,7 +79,6 @@ async def _run(batch_size: int, dry_run: bool) -> None:
 
 
 def main() -> int:
-    load_dotenv()
     args = _parse_args(sys.argv[1:])
     try:
         asyncio.run(_run(args.batch_size, args.dry_run))

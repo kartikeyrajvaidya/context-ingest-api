@@ -3,8 +3,9 @@
 Single callable behind `POST /v1/query`. Owns both transaction boundaries:
 one `commit_transaction_async` block around the `query_requests` insert,
 a second around the `query_responses` insert. Retrieval and the LLM call
-happen between the two, with no session held open — a crash mid-pipeline
-leaves a durable "we were asked this" record that the history fetcher
+happen between the two. The read session is released with
+`release_session` before the embeddings call and again before the LLM call,
+so no transaction is held across network I/O. A crash mid-pipeline leaves a durable "we were asked this" record that the history fetcher
 (`QueryResponse.fetch_recent_completed_turns`) skips over via its inner
 join.
 
@@ -21,7 +22,7 @@ from core.services.llm import LLMParseError, generate_answer
 from core.services.retrieval import retrieve_relevant_chunks
 from db.models.query_requests import QueryRequest
 from db.models.query_responses import QueryResponse
-from db.sqlalchemy.transaction import commit_transaction_async
+from db.sqlalchemy.transaction import commit_transaction_async, release_session
 from libs.logger import get_logger
 
 logger = get_logger(__name__)
@@ -95,6 +96,8 @@ async def query_document(request: QueryRequestSchema) -> QueryResponseSchema:
         conversation_id=conversation_id,
         limit=LLMConfig.CONVERSATION_HISTORY_TURN_LIMIT,
     )
+    # Release before the embeddings call so no transaction is held across it.
+    await release_session()
 
     retrieval_ok = True
     try:
@@ -107,6 +110,8 @@ async def query_document(request: QueryRequestSchema) -> QueryResponseSchema:
         )
         chunks = []
         retrieval_ok = False
+    # Release the search transaction before the LLM call.
+    await release_session()
 
     answer: str | None = None
     confidence: str = "low"

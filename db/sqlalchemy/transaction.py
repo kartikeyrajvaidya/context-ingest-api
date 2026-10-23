@@ -9,19 +9,27 @@ from libs.logger import get_logger
 logger = get_logger(__name__)
 
 
-async def commit_transaction_async_dependency():
-    """FastAPI dependency that yields a session and commits on exit."""
-    session = await db.get_session()
+async def release_session() -> None:
+    """Close the current task's scoped session and drop it from the registry.
+
+    Ends any open transaction (uncommitted reads roll back) and returns the
+    connection. Safe to call when no session exists. Call it before slow
+    network work so no transaction is held across it.
+    """
+    if db.session is not None:
+        await db.session.remove()
+
+
+async def release_session_dependency():
+    """FastAPI dependency that releases the scoped session on every exit path.
+
+    Registered app-wide, so early returns and raised HTTP errors (429, 404)
+    never leave a read transaction or connection open.
+    """
     try:
-        yield session
-    except Exception as exc:
-        logger.error(exc)
-        logger.error(traceback.format_exc())
-        await session.rollback()
-        raise
+        yield
     finally:
-        await session.commit()
-        await session.close()
+        await release_session()
 
 
 @asynccontextmanager
