@@ -14,8 +14,6 @@ import asyncio
 import sys
 import traceback
 
-from dotenv import load_dotenv
-
 from core.actions.ingest_manifest import IngestManifestError, ingest_manifest
 from db import db
 from libs.logger import get_logger
@@ -40,7 +38,6 @@ async def _run() -> int:
 
 
 def main() -> int:
-    load_dotenv()
     try:
         return asyncio.run(_run())
     except Exception:
