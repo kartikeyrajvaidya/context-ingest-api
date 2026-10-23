@@ -35,6 +35,12 @@ async def check_input(question: str) -> GateResult:
         logger.error("Safety classifier error: %s", exc)
         return GateResult(True, "error", f"classifier: {exc}")
 
+    if verdict is None:
+        # The parse helper returns no verdict when the model refuses to answer.
+        # Fail closed, the same as a classifier error.
+        logger.error("Safety classifier returned no verdict")
+        return GateResult(True, "error", "classifier: no verdict")
+
     if not verdict.safe:
         return GateResult(True, verdict.category, verdict.reason)
 
