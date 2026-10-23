@@ -41,6 +41,7 @@ Copy `.env.example` to `.env` and configure:
 | `RATE_LIMIT_IP_PER_MINUTE` | 5 | Max requests per IP per minute (query + feedback). |
 | `RATE_LIMIT_SESSION_PER_HOUR` | 15 | Max queries per session per hour. |
 | `RATE_LIMIT_CONVERSATION_MAX_TURNS` | 10 | Max turns per conversation. |
+| `TRUST_FORWARDED_HEADERS` | false | Read the client IP from `CF-Connecting-IP` / `X-Forwarded-For` instead of the socket peer. See [Reverse proxy](#reverse-proxy). |
 
 ### Safety
 
@@ -51,7 +52,9 @@ Copy `.env.example` to `.env` and configure:
 
 ## Reverse proxy
 
-Put a reverse proxy (nginx, Caddy) in front of port 8080 for TLS. Set `X-Forwarded-For` so the rate limiter sees real client IPs:
+Put a reverse proxy (nginx, Caddy) in front of port 8080 for TLS.
+
+By default the per-IP rate limiter keys on the socket peer address and ignores forwarding headers, because any client can send them. Behind a proxy every request then shares the proxy's address, so set `TRUST_FORWARDED_HEADERS=true` and have the proxy set the client address:
 
 ```nginx
 location / {
@@ -61,7 +64,7 @@ location / {
 }
 ```
 
-The rate limiter checks `cf-connecting-ip` (Cloudflare) first, then `X-Forwarded-For`, then `request.client.host`.
+With `TRUST_FORWARDED_HEADERS=true` the limiter uses `CF-Connecting-IP` first, then the last entry of `X-Forwarded-For` (the address your nearest proxy saw), then the socket peer. Only turn it on when the API is reachable solely through that proxy (bind port 8080 to localhost or a private network). If clients can reach the API directly, they can set these headers and rotate them to bypass the limit.
 
 ## Backups
 

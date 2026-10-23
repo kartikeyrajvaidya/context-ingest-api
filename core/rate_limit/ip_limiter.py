@@ -41,12 +41,21 @@ _warn_if_multi_worker()
 
 
 def get_client_ip(request: Request) -> str:
-    cf_ip = request.headers.get("cf-connecting-ip")
-    if cf_ip:
-        return cf_ip.strip()
-    forwarded = request.headers.get("x-forwarded-for")
-    if forwarded:
-        return forwarded.split(",")[0].strip()
+    """Return the client IP used as the per-IP rate-limit key.
+
+    Forwarding headers are client-controlled, so by default the socket peer
+    address is used. With TRUST_FORWARDED_HEADERS on, CF-Connecting-IP wins,
+    then the last X-Forwarded-For entry (the address the nearest proxy saw).
+    """
+    if RateLimitConfig.TRUST_FORWARDED_HEADERS:
+        cf_ip = request.headers.get("cf-connecting-ip")
+        if cf_ip and cf_ip.strip():
+            return cf_ip.strip()
+        forwarded = request.headers.get("x-forwarded-for")
+        if forwarded:
+            hops = [hop.strip() for hop in forwarded.split(",") if hop.strip()]
+            if hops:
+                return hops[-1]
     if request.client:
         return request.client.host
     return "unknown"
